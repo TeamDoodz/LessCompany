@@ -243,7 +243,7 @@ namespace MoreCompany
                         //GameObject copy = GameObject.Instantiate(playerPrefab, firstPlayerObject.transform.parent);
                         GameObject copy = GameObject.Instantiate(firstPlayerObject, firstPlayerObject.transform.parent);
                         NetworkObject copyNetworkObject = copy.GetComponent<NetworkObject>();
-                        ReflectionUtils.SetFieldValue(copyNetworkObject, "GlobalObjectIdHash", (uint) newId);
+                        copyNetworkObject.GlobalObjectIdHash = newId;
                         int handle = copyNetworkObject.gameObject.scene.handle;
                         uint globalObjectIdHash = newId;
 
@@ -296,7 +296,7 @@ namespace MoreCompany
         public static void Postfix(ref PlayerControllerB __instance)
         {
             Collider[] nearByPlayers = new Collider[MainClass.newPlayerCount];
-            ReflectionUtils.SetFieldValue(__instance, "nearByPlayers", nearByPlayers);
+            __instance.nearByPlayers = nearByPlayers;
         }
     }
 

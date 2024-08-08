@@ -29,7 +29,7 @@ namespace MoreCompany
         public static void Postfix(ref BlobAI __instance)
         {
             Collider[] ragdollColliders = new Collider[MainClass.newPlayerCount];
-            ReflectionUtils.SetFieldValue(__instance, "ragdollColliders", ragdollColliders);
+            __instance.ragdollColliders = ragdollColliders;
         }
     }
 
@@ -39,7 +39,7 @@ namespace MoreCompany
         public static void Postfix(ref CrawlerAI __instance)
         {
             Collider[] nearPlayerColliders = new Collider[MainClass.newPlayerCount];
-            ReflectionUtils.SetFieldValue(__instance, "nearPlayerColliders", nearPlayerColliders);
+            __instance.nearPlayerColliders = nearPlayerColliders;
         }
     }
 

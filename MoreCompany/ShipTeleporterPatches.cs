@@ -12,8 +12,8 @@ namespace MoreCompany
             {
                 newTeleporterIds[i] = -1;
             }
-            
-            ReflectionUtils.SetFieldValue(__instance, "playersBeingTeleported", newTeleporterIds);
+
+            __instance.playersBeingTeleported = newTeleporterIds;
         }
     }
 }

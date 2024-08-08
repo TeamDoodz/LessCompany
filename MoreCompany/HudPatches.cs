@@ -321,8 +321,9 @@ namespace MoreCompany
 	{
 		public static void Postfix(HUDManager __instance)
 		{
-			Dictionary<Animator, PlayerControllerB> specPrivateDict = ReflectionUtils.GetFieldValue<Dictionary<Animator, PlayerControllerB>>(__instance, "spectatingPlayerBoxes");
-			int xVal = -64;
+            Dictionary<Animator, PlayerControllerB> specPrivateDict = __instance.spectatingPlayerBoxes;
+
+            int xVal = -64;
 			int yVal = 0;
 			int index = 0;
 
