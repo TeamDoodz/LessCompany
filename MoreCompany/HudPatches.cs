@@ -5,7 +5,6 @@ using System.Reflection.Emit;
 using System.Text;
 using GameNetcodeStuff;
 using HarmonyLib;
-using MoreCompany.Cosmetics;
 using Steamworks;
 using TMPro;
 using UnityEngine;
@@ -46,8 +45,6 @@ namespace MoreCompany
                 MainClass.ReadSettingsFromFile();
 
                 GameObject parent = __instance.transform.parent.gameObject;
-
-                CosmeticRegistry.SpawnCosmeticGUI();
 
                 // Add the crew count input
                 LANMenu.InitializeMenu();

@@ -79,16 +79,4 @@ namespace MoreCompany
             return newInstructions.AsEnumerable();
         }
     }
-
-    [HarmonyPatch(typeof(StartOfRound), "OnPlayerDC")]
-    public static class OnPlayerDCPatch
-    {
-        public static void Postfix(int playerObjectNumber, ulong clientId)
-        {
-            if (MainClass.playerIdsAndCosmetics.ContainsKey(playerObjectNumber))
-            {
-                MainClass.playerIdsAndCosmetics.Remove(playerObjectNumber);
-            }
-        }
-    }
 }

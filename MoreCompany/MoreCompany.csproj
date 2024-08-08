@@ -27,7 +27,6 @@
   <!-- Embedded resources -->
   <ItemGroup>
     <EmbeddedResource Include="Resources\morecompany.assets" />
-    <EmbeddedResource Include="Resources\morecompany.cosmetics" />
   </ItemGroup>
 
   <!-- Configuration-specific properties -->

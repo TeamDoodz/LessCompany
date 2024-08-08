@@ -10,7 +10,6 @@ using BepInEx.Configuration;
 using BepInEx.Logging;
 using GameNetcodeStuff;
 using HarmonyLib;
-using MoreCompany.Cosmetics;
 using MoreCompany.Utils;
 using Steamworks;
 using Unity.Netcode;
@@ -35,25 +34,13 @@ namespace MoreCompany
 
         public static ConfigFile StaticConfig;
         public static ConfigEntry<int> playerCount;
-        public static ConfigEntry<bool> cosmeticsDeadBodies;
-        public static ConfigEntry<bool> cosmeticsSyncOther;
-        public static ConfigEntry<bool> defaultCosmetics;
-        public static ConfigEntry<bool> cosmeticsPerProfile;
 
         public static GameObject quickMenuScrollParent;
 
         public static GameObject playerEntry;
         public static GameObject crewCountUI;
 
-        public static GameObject cosmeticGUIInstance;
-        public static GameObject cosmeticButton;
-
         public static ManualLogSource StaticLogger;
-
-        public static Dictionary<int, List<string>> playerIdsAndCosmetics = new Dictionary<int, List<string>>();
-
-        public static string dynamicCosmeticsPath;
-        public static string cosmeticSavePath;
 
         private void Awake()
         {
@@ -61,10 +48,6 @@ namespace MoreCompany
             StaticConfig = Config;
 
             playerCount = StaticConfig.Bind("General", "Player Count", defaultPlayerCount, new ConfigDescription("How many players can be in your lobby?", new AcceptableValueRange<int>(minPlayerCount, maxPlayerCount)));
-            cosmeticsSyncOther = StaticConfig.Bind("Cosmetics", "Show Cosmetics", true, "Should you be able to see cosmetics of other players?"); // This is the one linked to the UI button
-            cosmeticsDeadBodies = StaticConfig.Bind("Cosmetics", "Show On Dead Bodies", true, "Should you be able to see cosmetics on dead bodies?");
-            defaultCosmetics = StaticConfig.Bind("Cosmetics", "Default Cosmetics", true, "Should the default cosmetics be enabled?");
-            cosmeticsPerProfile = StaticConfig.Bind("Cosmetics", "Per Profile Cosmetics", false, "Should the cosmetics be saved per-profile?");
 
             Harmony harmony = new Harmony(PluginInformation.PLUGIN_GUID);
             try
@@ -91,91 +74,10 @@ namespace MoreCompany
             StaticLogger.LogInfo("Loading SETTINGS...");
             ReadSettingsFromFile();
 
-            dynamicCosmeticsPath = Paths.PluginPath + "/MoreCompanyCosmetics";
-
-            if (cosmeticsPerProfile.Value)
-            {
-                cosmeticSavePath = $"{Application.persistentDataPath}/morecompanycosmetics-{Directory.GetParent(Paths.BepInExRootPath).Name}.txt";
-            }
-            else
-            {
-                cosmeticSavePath = $"{Application.persistentDataPath}/morecompanycosmetics.txt";
-            }
-            cosmeticsPerProfile.SettingChanged += (sender, args) => {
-                if (cosmeticsPerProfile.Value)
-                {
-                    cosmeticSavePath = $"{Application.persistentDataPath}/MCCosmeticsSave-{Directory.GetParent(Paths.BepInExRootPath).Name}.mcs";
-                }
-                else
-                {
-                    cosmeticSavePath = $"{Application.persistentDataPath}/MCCosmeticsSave.mcs";
-                }
-            };
-
-            StaticLogger.LogInfo("Checking: " + dynamicCosmeticsPath);
-            if (!Directory.Exists(dynamicCosmeticsPath))
-            {
-                StaticLogger.LogInfo("Creating cosmetics directory");
-                Directory.CreateDirectory(dynamicCosmeticsPath);
-            }
-            StaticLogger.LogInfo("Loading COSMETICS...");
-            ReadCosmeticsFromFile();
-
-            if (defaultCosmetics.Value)
-            {
-                StaticLogger.LogInfo("Loading DEFAULT COSMETICS...");
-                AssetBundle cosmeticsBundle = BundleUtilities.LoadBundleFromInternalAssembly("morecompany.cosmetics", Assembly.GetExecutingAssembly());
-                CosmeticRegistry.LoadCosmeticsFromBundle(cosmeticsBundle);
-                cosmeticsBundle.Unload(false);
-            }
-
-            StaticLogger.LogInfo("Loading USER COSMETICS...");
-            RecursiveCosmeticLoad(Paths.PluginPath);
-
             AssetBundle bundle = BundleUtilities.LoadBundleFromInternalAssembly("morecompany.assets", Assembly.GetExecutingAssembly());
             LoadAssets(bundle);
 
             StaticLogger.LogInfo("Loaded MoreCompany FULLY");
-        }
-
-        private void RecursiveCosmeticLoad(string directory)
-        {
-            foreach (var subDirectory in Directory.GetDirectories(directory))
-            {
-                RecursiveCosmeticLoad(subDirectory);
-            }
-
-            foreach (var file in Directory.GetFiles(directory))
-            {
-                if (file.EndsWith(".cosmetics"))
-                {
-                    AssetBundle bundle = AssetBundle.LoadFromFile(file);
-                    CosmeticRegistry.LoadCosmeticsFromBundle(bundle);
-                    bundle.Unload(false);
-                }
-            }
-        }
-
-        private void ReadCosmeticsFromFile()
-        {
-            if (System.IO.File.Exists(cosmeticSavePath))
-            {
-                string[] lines = System.IO.File.ReadAllLines(cosmeticSavePath);
-                foreach (var line in lines)
-                {
-                    CosmeticRegistry.locallySelectedCosmetics.Add(line);
-                }
-            }
-        }
-
-        public static void WriteCosmeticsToFile()
-        {
-            string built = "";
-            foreach (var cosmetic in CosmeticRegistry.locallySelectedCosmetics)
-            {
-                built += cosmetic + "\n";
-            }
-            System.IO.File.WriteAllText(cosmeticSavePath, built);
         }
 
         public static void SaveSettingsToFile()
@@ -204,8 +106,6 @@ namespace MoreCompany
             {
                 quickMenuScrollParent = bundle.LoadPersistentAsset<GameObject>("assets/morecompanyassets/quickmenuoverride.prefab");
                 playerEntry = bundle.LoadPersistentAsset<GameObject>("assets/morecompanyassets/playerlistslot.prefab");
-                cosmeticGUIInstance = bundle.LoadPersistentAsset<GameObject>("assets/morecompanyassets/testoverlay.prefab");
-                cosmeticButton = bundle.LoadPersistentAsset<GameObject>("assets/morecompanyassets/cosmeticinstance.prefab");
                 crewCountUI = bundle.LoadPersistentAsset<GameObject>("assets/morecompanyassets/crewcountfield.prefab");
                 bundle.Unload(false);
             }
