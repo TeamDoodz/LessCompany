@@ -40,7 +40,6 @@ namespace MoreCompany
         public static ConfigEntry<bool> defaultCosmetics;
         public static ConfigEntry<bool> cosmeticsPerProfile;
 
-        public static Texture2D mainLogo;
         public static GameObject quickMenuScrollParent;
 
         public static GameObject playerEntry;
@@ -203,7 +202,6 @@ namespace MoreCompany
         {
             if (bundle)
             {
-                mainLogo = bundle.LoadPersistentAsset<Texture2D>("assets/morecompanyassets/morecompanytransparentred.png");
                 quickMenuScrollParent = bundle.LoadPersistentAsset<GameObject>("assets/morecompanyassets/quickmenuoverride.prefab");
                 playerEntry = bundle.LoadPersistentAsset<GameObject>("assets/morecompanyassets/playerlistslot.prefab");
                 cosmeticGUIInstance = bundle.LoadPersistentAsset<GameObject>("assets/morecompanyassets/testoverlay.prefab");
